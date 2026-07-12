@@ -458,7 +458,7 @@ def main() -> None:
 
     # Sidebar preferences setup
     st.sidebar.header("⚙️ App Preferences")
-    app_lang = st.sidebar.selectbox("Language / Idioma", ["English", "Español"])
+    app_lang = st.sidebar.radio("Language / Idioma", ["English", "Español"], horizontal=True)
     lang_key = "en" if app_lang == "English" else "es"
     
     st.session_state["app_lang_key"] = lang_key
@@ -466,7 +466,7 @@ def main() -> None:
     def t(key: str) -> str:
         return TRANSLATIONS[lang_key].get(key, key)
         
-    theme_choice = st.sidebar.radio("Theme / Tema", ["🌙 Dark / Oscuro", "☀️ Light / Claro"])
+    theme_choice = st.sidebar.radio("Theme / Tema", ["🌙 Dark / Oscuro", "☀️ Light / Claro"], horizontal=True)
     is_light = "Light" in theme_choice
 
     if is_light:
@@ -588,13 +588,13 @@ def main() -> None:
     )
     
     LANG_MAPPING = {
-        "Русский (Russian)": "ru",
-        "Английский (English)": "en",
-        "Испанский (Spanish)": "es",
-        "Немецкий (German)": "de",
-        "Французский (French)": "fr"
+        "🇷🇺 RU": "ru",
+        "🇬🇧 EN": "en",
+        "🇪🇸 ES": "es",
+        "🇩🇪 DE": "de",
+        "🇫🇷 FR": "fr"
     }
-    lang_label = st.sidebar.selectbox(t('lang_voice'), list(LANG_MAPPING.keys()))
+    lang_label = st.sidebar.radio(t('lang_voice'), list(LANG_MAPPING.keys()), horizontal=True)
     lang_code = LANG_MAPPING[lang_label]
     
     st.sidebar.markdown("---")
