@@ -77,6 +77,10 @@ def run_async(coro):
 
 
 def get_api_key() -> str:
+    lang = st.session_state.get("app_lang_key", "en")
+    def loc_t(k):
+        return TRANSLATIONS[lang].get(k, k)
+
     api_key = st.sidebar.text_input(
         "Fireworks API Key",
         value=os.getenv("FIREWORKS_API_KEY", ""),
@@ -88,21 +92,25 @@ def get_api_key() -> str:
         api_key = os.getenv("FIREWORKS_API_KEY", "").strip()
         
     if not api_key:
-        st.info("Пожалуйста, введите ваш Fireworks API Key (начинается с fw_...) в боковой панели, чтобы начать.")
+        st.info(loc_t("api_key_prompt"))
         st.stop()
         
     return api_key
 
 
 def build_style_weights(in_sidebar: bool = True) -> Dict[str, Any]:
+    lang = st.session_state.get("app_lang_key", "en")
+    def loc_t(k):
+        return TRANSLATIONS[lang].get(k, k)
+
     parent = st.sidebar if in_sidebar else st
-    with parent.expander("🎛️ Тонкая настройка стилей", expanded=False):
-        custom_style = st.text_input("Свой стиль (Custom Style)", placeholder="например: Пиратский сленг, Сленг геймеров...")
+    with parent.expander(loc_t("fine_tuning_styles"), expanded=False):
+        custom_style = st.text_input(loc_t("style_custom"), placeholder=loc_t("style_custom_placeholder"))
         return {
-            "sarcasm": st.slider("Сарказм (Sarcasm)", 0, 100, 30),
-            "humor": st.slider("Юмор (Humor)", 0, 100, 40),
-            "technical_slang": st.slider("IT-Сленг (Technical Slang)", 0, 100, 20),
-            "formal_tone": st.slider("Деловой тон (Formal Tone)", 0, 100, 10),
+            "sarcasm": st.slider(loc_t("style_sarcasm"), 0, 100, 30),
+            "humor": st.slider(loc_t("style_humor"), 0, 100, 40),
+            "technical_slang": st.slider(loc_t("style_tech"), 0, 100, 20),
+            "formal_tone": st.slider(loc_t("style_formal"), 0, 100, 10),
             "custom_style_desc": custom_style.strip() if custom_style else ""
         }
 
@@ -387,6 +395,14 @@ TRANSLATIONS = {
         "toast_story_success": "Video created successfully!",
         "err_revoice": "Re-voice error",
         "err_story": "Story assembly error",
+        "fine_tuning_styles": "🎛️ Fine-Tuning Styles",
+        "style_custom": "Custom Style",
+        "style_custom_placeholder": "e.g. Pirate slang, Gamer slang...",
+        "style_sarcasm": "Sarcasm",
+        "style_humor": "Humor",
+        "style_tech": "Technical Slang",
+        "style_formal": "Formal Tone",
+        "api_key_prompt": "Please enter your Fireworks API Key (starts with fw_...) in the sidebar to start."
     },
     "es": {
         "title": "GemmaForge",
@@ -444,6 +460,14 @@ TRANSLATIONS = {
         "toast_story_success": "¡Video creado con éxito!",
         "err_revoice": "Error de re-doblaje",
         "err_story": "Error de ensamblaje de la historia",
+        "fine_tuning_styles": "🎛️ Ajuste Fino de Estilos",
+        "style_custom": "Estilo Personalizado",
+        "style_custom_placeholder": "ej. Jerga de piratas, jerga de gamers...",
+        "style_sarcasm": "Sarcasmo",
+        "style_humor": "Humor",
+        "style_tech": "Jerga Técnica",
+        "style_formal": "Tono Formal",
+        "api_key_prompt": "Por favor, introduzca su clave API de Fireworks (comienza con fw_...) en la barra lateral para comenzar."
     }
 }
 
