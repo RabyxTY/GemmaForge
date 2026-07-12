@@ -235,6 +235,7 @@ def generate_script(
     visual_context: Sequence[Dict[str, Any]] | str,
     weights: Dict[str, Any],
     api_key: str,
+    lang_code: str = "en",
 ) -> Dict[str, Any]:
     if isinstance(visual_context, str):
         visual_context_text = visual_context
@@ -243,12 +244,30 @@ def generate_script(
 
     weights_text = json.dumps(weights, ensure_ascii=False, indent=2)
 
+    LANG_NAMES = {
+        "en": "English",
+        "es": "Spanish",
+        "ru": "Russian",
+        "de": "German",
+        "fr": "French"
+    }
+    target_lang_name = LANG_NAMES.get(lang_code, "English")
+
+    # Стили по умолчанию
+    if lang_code == "es":
+        default_styles = ["Sarcástico", "Humorístico", "Jerga de TI", "Formal"]
+    elif lang_code == "ru":
+        default_styles = ["Саркастический", "Юмористический", "IT-сленг", "Деловой"]
+    else:
+        default_styles = ["Sarcastic", "Humorous", "IT-slang", "Business"]
+
     custom_style_desc = weights.get("custom_style_desc", "")
-    style_list_desc = "The 4 styles must be: 'Саркастический', 'Юмористический', 'IT-сленг', 'Деловой'."
-    user_style_desc = "Generate 4 distinct script variants (Sarcastic, Humorous, IT-slang, Business)."
     if custom_style_desc:
-        style_list_desc = f"The 4 styles must be: 'Саркастический', 'Юмористический', 'IT-сленг', '{custom_style_desc}'."
-        user_style_desc = f"Generate 4 distinct script variants (Sarcastic, Humorous, IT-slang, and {custom_style_desc} style)."
+        style_list_desc = f"The 4 styles must be: '{default_styles[0]}', '{default_styles[1]}', '{default_styles[2]}', '{custom_style_desc}'."
+        user_style_desc = f"Generate 4 distinct script variants ({default_styles[0]}, {default_styles[1]}, {default_styles[2]}, and {custom_style_desc} style)."
+    else:
+        style_list_desc = f"The 4 styles must be: '{default_styles[0]}', '{default_styles[1]}', '{default_styles[2]}', '{default_styles[3]}'."
+        user_style_desc = f"Generate 4 distinct script variants ({default_styles[0]}, {default_styles[1]}, {default_styles[2]}, {default_styles[3]})."
 
     with _build_session(api_key) as session:
         raw_content = _chat_completion(
@@ -278,7 +297,7 @@ def generate_script(
                         f"Style weights:\n{weights_text}\n\n"
                         f"{user_style_desc} "
                         "Keep narration short, clear, and easy to read for TTS. "
-                        "Write the narration, title, hook, and on_screen_text in the user's language (e.g. Russian if the concept is in Russian). "
+                        f"CRITICAL: Write the narration, title, hook, and on_screen_text strictly in {target_lang_name}. "
                         "CRITICAL: The 'image_prompt' MUST ALWAYS BE WRITTEN IN ENGLISH. Write highly detailed, artistic, and cinematic prompts for FLUX.1 image generator, describing camera angles, lighting, styles, and avoiding abstract text."
                     ),
                 },

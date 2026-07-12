@@ -666,7 +666,8 @@ def main() -> None:
                                 concept=concept,
                                 visual_context=analysis["visual_context"],
                                 weights=weights,
-                                api_key=api_key
+                                api_key=api_key,
+                                lang_code=lang_code
                             )
                         )
                         st.session_state["revoice_script_variants"] = revoice_script_variants
@@ -793,7 +794,8 @@ def main() -> None:
                         concept=final_concept,
                         visual_context="No source video. Generate a fresh story-driven short-form video.",
                         weights=weights,
-                        api_key=api_key
+                        api_key=api_key,
+                        lang_code=lang_code
                     )
                 )
                 st.session_state["story_script_variants"] = story_script_variants
