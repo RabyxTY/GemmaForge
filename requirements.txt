@@ -1,0 +1,9 @@
+streamlit==1.32.0
+openai>=1.30.0
+opencv-python==4.9.0.80
+Pillow==10.2.0
+moviepy==1.0.3
+edge-tts==6.1.9
+python-dotenv==1.0.1
+tiktoken==0.6.0
+requests==2.31.0
